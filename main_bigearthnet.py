@@ -95,3 +95,4 @@ if __name__ == '__main__':
     trainer.fit(model, datamodule=datamodule)
 
 #测试哦
+#测试成功123132
