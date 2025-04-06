@@ -93,3 +93,5 @@ if __name__ == '__main__':
         check_val_every_n_epoch=10
     )
     trainer.fit(model, datamodule=datamodule)
+
+#测试哦
