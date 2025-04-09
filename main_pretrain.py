@@ -23,8 +23,10 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser = Trainer.add_argparse_args(parser)
     parser = MocoV2.add_model_specific_args(parser)
-    parser = ArgumentParser(parents=[parser], conflict_handler='resolve', add_help=False)
-    parser.add_argument('--gpus', type=int, default=1)
+    #parser = ArgumentParser(parents=[parser], conflict_handler='resolve', add_help=False)
+    #测试能不能跑
+    #parser.add_argument('--gpus', type=int, default=1)  原来代码
+    parser.add_argument('--data_dir', type=str,default="D:\\seco1\\sc-yourname\\seasonal-contrast\\seco_100k\\seasonal_contrast_100k")#直接修改地址
     parser.add_argument('--data_dir', type=str)
     parser.add_argument('--data_mode', type=str, choices=['moco', 'moco_tp', 'seco'], default='seco')
     parser.add_argument('--max_epochs', type=int, default=200)
