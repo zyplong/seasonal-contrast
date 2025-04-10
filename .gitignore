@@ -1,0 +1,21 @@
+# 忽略图像和数据集
+*.jpg
+*.jpeg
+*.png
+*.tif
+EuroSAT/
+datasets/
+seco_100k/
+*.zip
+*.ckpt
+*.pth
+
+# 忽略虚拟环境和缓存
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# 忽略 IDE 配置
+.idea/
+.vscode/
