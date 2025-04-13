@@ -35,3 +35,5 @@ class EurosatDataset(Dataset):
 
     def __len__(self):
         return len(self.samples)
+
+

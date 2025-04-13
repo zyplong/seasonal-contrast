@@ -17,7 +17,7 @@ from models.moco2_module import MocoV2  # 核心 MoCo V2 结构，用于学习�
 
 
 def get_experiment_name(hparams):#拼接实验名称，用于 tensorboard 日志目录命名。
-    data_name = os.path.basename(hparams.data_dir)
+    data_name = os.path.basename(hparams.data_dir)#提取出数据集路径的最后一级目录名称
     name = f'{hparams.base_encoder}-{data_name}-{hparams.data_mode}-epochs={hparams.max_epochs}'
     return name
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(parents=[parser], conflict_handler='resolve', add_help=False)  # 处理反复参数
     #测试能不能跑
     # ========== 通用设置 ==========
-    parser.add_argument('--gpus', type=int, default=1)
+    '''parser.add_argument('--gpus', type=int, default=1)
     parser.add_argument('--data_dir', type=str,default="F:\\zyp\\Thesis source code\\seasonal-contrast\\seco_100k\\seasonal_contrast_100k")#直接修改地址
     #parser.add_argument('--data_dir', type=str)#原来代码
     parser.add_argument('--data_mode', type=str, choices=['moco', 'moco_tp', 'seco'], default='seco')
@@ -44,8 +44,27 @@ if __name__ == '__main__':
     # print("DEBUG: data_dir =", args.data_dir)
     # print("DEBUG: data_mode =", args.data_mode)
     # print("DEBUG: batch_size =", args.batch_size)
-    # print("DEBUG: num_workers =", args.num_workers)
+    # print("DEBUG: num_workers =", args.num_workers)'''
 
+    # ============最小训练测试============================
+    parser.add_argument('--gpus', type=int, default=1)  # 如果用CPU测试可设为0，用GPU的话保持为1
+    parser.add_argument('--data_dir', type=str,
+                        default="F:\\zyp\\Thesis source code\\seasonal-contrast\\seco_100k\\seasonal_contrast_100k")
+
+    parser.add_argument('--data_mode', type=str, choices=['moco', 'moco_tp', 'seco'], default='seco')
+
+    parser.add_argument('--max_epochs', type=int, default=1)  # 最小1个epoch
+    parser.add_argument('--batch_size', type=int, default=8)  # 最小批次大小
+    parser.add_argument('--num_workers', type=int, default=0)  # 避免Windows多线程问题
+
+    parser.add_argument('--schedule', type=int, nargs='*', default=[1])  # 无调度影响
+
+    parser.add_argument('--online_data_dir', type=str, default=None)  # 不用下游分类，设为None
+    parser.add_argument('--online_max_epochs', type=int, default=0)  # 禁用在线评估
+    parser.add_argument('--online_val_every_n_epoch', type=int, default=0)
+
+    parser.add_argument('--debug', action='store_true')  # 运行时加上 --debug 表示开启调试模式
+    args = parser.parse_args()
     # ========== 根据数据类型，创建 datamodule ==========
     if args.data_mode == 'moco':
         datamodule = SeasonalContrastBasicDataModule(
@@ -94,7 +113,7 @@ scheduler = MocoLRScheduler(initial_lr=args.learning_rate, schedule=args.schedul
     #关闭在线评估模块
     
 # ========== 培训器 ==========
-    trainer = Trainer.from_argparse_args(
+trainer = Trainer.from_argparse_args(
         args,
         logger=logger,
         checkpoint_callback=checkpoint_callback,
@@ -103,7 +122,7 @@ scheduler = MocoLRScheduler(initial_lr=args.learning_rate, schedule=args.schedul
         max_epochs=args.max_epochs,
         weights_summary='full'
     )
-    trainer.fit(model, datamodule=datamodule)
+trainer.fit(model, datamodule=datamodule)
 
 
 
